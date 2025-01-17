@@ -1,0 +1,42 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.coderknock.codegen.CodeGenTool</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>CodeGenTool</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor email="sanchan@coderknock.com" url="https://www.coderknock.com">CoderKnock</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description><![CDATA[This Java code generator plugin has good scalability and will gradually incorporate various code generation logics through iteration in the future. Currently, the implemented function is to automatically generate the isXXX method in enumeration classes, thereby improving development efficiency and code standardization.]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+
+    </extensions>
+    <actions>
+        <group id="com.coderknock.codegen.tool.action.CustomDefaultActionGroup"
+               class="com.coderknock.codegen.tool.action.CustomDefaultActionGroup"
+               text="Gen Menu"
+               description="Gen Menu"
+               popup="true">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            <action id="com.coderknock.codegen.tool.action.EnumIsXXXAction"
+                    class="com.coderknock.codegen.tool.action.EnumIsXXXAction"
+                    icon="com.coderknock.codegen.tool.icons.SdkIcons.ENUM_IS_XXX"
+                    text="Enum IsXXX"
+                    description="Enum isXXX Gen"/>
+        </group>
+    </actions>
+
+</idea-plugin>
