@@ -1,5 +1,5 @@
 package com.coderknock.codegen.tool.domin;
-
+// [MermaidChart: 56e6d3bb-312a-491d-b96e-3d7ba8d75bfe]
 public class Result<T> {
     private T data;
     private int code;

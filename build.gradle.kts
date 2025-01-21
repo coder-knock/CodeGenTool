@@ -1,3 +1,5 @@
+import org.jetbrains.intellij.model.ProductRelease
+
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.25"
@@ -5,7 +7,7 @@ plugins {
 }
 
 group = "com.coderknock.codegen"
-version = "1.0-SNAPSHOT"
+version = "0.0.2"
 
 repositories {
     // 添加阿里云镜像地址
@@ -16,9 +18,8 @@ repositories {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2024.1.7")
+    version.set("2022.3")
     type.set("IC") // Target IDE Platform
-
     plugins.set(listOf(/* Plugin Dependencies */))
 }
 
@@ -39,8 +40,7 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("241")
-        untilBuild.set("243.*")
+        sinceBuild.set("223")
     }
 
     signPlugin {

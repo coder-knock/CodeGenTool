@@ -5,7 +5,6 @@ import com.coderknock.codegen.tool.gen.GenerationUtil
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.ui.Messages
-import com.intellij.openapi.vfs.readText
 import java.util.*
 import javax.swing.Icon
 
@@ -48,7 +47,7 @@ class EnumIsXXXAction : AnAction {
         val title = event.presentation.description
         if (virtualFile != null && virtualFile.exists()) {
             // 准备要写入的内容，这里以字符串为例
-            val result = GenerationUtil.enumIsXXX(virtualFile.readText())
+            val result = GenerationUtil.enumIsXXX(String(virtualFile.contentsToByteArray(), virtualFile.charset))
             if (result.isSuccess()) {
                 WriteAction.run<Throwable> {
                     // 写入内容，注意这会覆盖原有文件内容，如果需要追加内容，请使用appendText()方法
