@@ -39,7 +39,6 @@ tasks {
     }
 
     patchPluginXml {
-        version.set("${project.version}")
         sinceBuild.set("223")
         untilBuild = provider { null }
     }
