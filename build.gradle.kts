@@ -1,5 +1,3 @@
-import org.jetbrains.intellij.model.ProductRelease
-
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.25"
@@ -27,6 +25,7 @@ dependencies {
     implementation("cn.hutool:hutool-all:5.8.35")
     implementation("org.jboss.forge.roaster:roaster-api:2.30.1.Final")
     implementation("org.jboss.forge.roaster:roaster-jdt:2.30.1.Final")
+    implementation("org.jetbrains:marketplace-zip-signer:0.1.8")
 }
 
 tasks {
@@ -40,12 +39,14 @@ tasks {
     }
 
     patchPluginXml {
+        version.set("${project.version}")
         sinceBuild.set("223")
+        untilBuild = provider { null }
     }
 
     signPlugin {
-        certificateChainFile.set(file("~/idea/chain.crt"))
-        privateKeyFile.set(file("~/idea/private.pem"))
+        certificateChainFile.set(file(System.getenv("CERTIFICATE_CHAIN")))
+        privateKeyFile.set(file(System.getenv("PRIVATE_KEY")))
         password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
     }
 

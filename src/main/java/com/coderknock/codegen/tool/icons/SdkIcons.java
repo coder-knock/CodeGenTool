@@ -8,6 +8,7 @@ import javax.swing.*;
 
 public class SdkIcons {
 
-  public static final Icon ENUM_IS_XXX = IconLoader.getIcon("/icons/enum_is_xxx.svg", SdkIcons.class);
+  public static final Icon ENUM_EXTEND = IconLoader.getIcon("/icons/enum.svg", SdkIcons.class);
+  public static final Icon CODE = IconLoader.getIcon("/icons/code.svg", SdkIcons.class);
 
 }

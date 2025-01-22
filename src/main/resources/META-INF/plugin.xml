@@ -13,8 +13,32 @@
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
-    <description><![CDATA[This Java code generator plugin has good scalability and will gradually incorporate various code generation logics through iteration in the future. Currently, the implemented function is to automatically generate the isXXX method in enumeration classes, thereby improving development efficiency and code standardization.]]></description>
+    <description>
+        <![CDATA[This Java code generator plugin has good scalability and will gradually incorporate various code generation logics through iteration in the future. Currently, the implemented function is to automatically generate the isXXX method in enumeration classes, thereby improving development efficiency and code standardization.]]></description>
+    <change-notes><![CDATA[
+<h2>Enum isXXX/h2>
+<ul>
+  <li>Enum supports the generation of the isExist method.</li>
+  <li>Comments have been added to the generated method.</li>
+</ul>
+<h2>Other optimizations</h2>
+<ul>
+  <li>The supported versions have been expanded.</li>
+  <li>Adjust the icon</li>
+</ul>
 
+
+<h2>Enum isXXX/h2>
+<ul>
+  <li>Enum 支持生成 `isExist` 方法</li>
+  <li>生成的方法添加了注释</li>
+</ul>
+<h2>其他优化</h2>
+<ul>
+  <li>扩展了支持的版本</li>
+  <li>调整图标</li>
+</ul>
+]]></change-notes>
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
@@ -25,17 +49,17 @@
 
     </extensions>
     <actions>
-        <group id="com.coderknock.codegen.tool.action.CustomDefaultActionGroup"
-               class="com.coderknock.codegen.tool.action.CustomDefaultActionGroup"
-               text="Gen Menu"
-               description="Gen Menu"
+        <group id="com.coderknock.codegen.tool.action.GenToolActionGroup"
+               class="com.coderknock.codegen.tool.action.GenToolActionGroup"
+               text="Code Extend"
+               description="Code extend menu"
                popup="true">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-            <action id="com.coderknock.codegen.tool.action.EnumIsXXXAction"
-                    class="com.coderknock.codegen.tool.action.EnumIsXXXAction"
-                    icon="com.coderknock.codegen.tool.icons.SdkIcons.ENUM_IS_XXX"
+            <action id="com.coderknock.codegen.tool.action.EnumExtendAction"
+                    class="com.coderknock.codegen.tool.action.EnumExtendAction"
+                    icon="com.coderknock.codegen.tool.icons.SdkIcons.ENUM_EXTEND"
                     text="Enum IsXXX"
-                    description="Enum isXXX Gen"/>
+                    description="Enum isXXX Extend"/>
         </group>
     </actions>
 

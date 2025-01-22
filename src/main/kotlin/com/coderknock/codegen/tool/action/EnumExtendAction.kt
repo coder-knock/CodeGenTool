@@ -2,7 +2,10 @@
 package com.coderknock.codegen.tool.action
 
 import com.coderknock.codegen.tool.gen.GenerationUtil
-import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.ui.Messages
 import java.util.*
@@ -15,14 +18,14 @@ import javax.swing.Icon
  * in the plugin.xml file.
  * But when added at runtime, this class is instantiated by an action group.
  */
-class EnumIsXXXAction : AnAction {
+class EnumExtendAction : AnAction {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.EDT
     }
 
     /**
      * This default constructor is used by the IntelliJ Platform framework to instantiate this class based on plugin.xml
-     * declarations. Only needed in [EnumIsXXXAction] class because a second constructor is overridden.
+     * declarations. Only needed in [EnumExtendAction] class because a second constructor is overridden.
      */
     constructor() : super()
 
@@ -41,47 +44,24 @@ class EnumIsXXXAction : AnAction {
     override fun actionPerformed(event: AnActionEvent) {
         // Using the event, create and show a dialog
         val currentProject = event.project
-        val fileEditor = event.dataContext.getData(PlatformDataKeys.LAST_ACTIVE_FILE_EDITOR)
-        val virtualFile = fileEditor!!.file
+        val fileEditor = event.getRequiredData(CommonDataKeys.EDITOR)
+        val document = fileEditor.document
         // 从 file 中读取文件
         val title = event.presentation.description
-        if (virtualFile != null && virtualFile.exists()) {
-            // 准备要写入的内容，这里以字符串为例
-            val result = GenerationUtil.enumIsXXX(String(virtualFile.contentsToByteArray(), virtualFile.charset))
-            if (result.isSuccess()) {
-                WriteAction.run<Throwable> {
-                    // 写入内容，注意这会覆盖原有文件内容，如果需要追加内容，请使用appendText()方法
-                    virtualFile.setBinaryContent(result.getData().toByteArray(Charsets.UTF_8))
-                    // 可能需要刷新文件系统或通知编辑器内容已改变，根据具体需求调整
-                    virtualFile.refresh(false, true)
-                }
-
-            } else {
-                Messages.showMessageDialog(
-                    currentProject,
-                    result.message,
-                    title,
-                    Messages.getInformationIcon()
-                )
+        // 准备要写入的内容，这里以字符串为例
+        val result = GenerationUtil.enumIsXXX(document.text);
+        if (result.isSuccess()) {
+            WriteAction.run<Throwable> {
+                document.setText(result.getData())
             }
-
         } else {
-            val message =
-                StringBuilder("选择错误")
-            // If an element is selected in the editor, add info about it.
-            val selectedElement = event.getData(CommonDataKeys.NAVIGATABLE)
-            if (selectedElement != null) {
-                message.append("\nSelected Element: ").append(selectedElement)
-            }
-
             Messages.showMessageDialog(
                 currentProject,
-                message.toString(),
+                result.message,
                 title,
                 Messages.getInformationIcon()
             )
         }
-
     }
 
     override fun update(e: AnActionEvent) {

@@ -13,7 +13,7 @@ import java.util.*
  * Creates an action group to contain menu actions. See plugin.xml declarations.
  * 创建操作组以包含菜单操作。请参见 plugin. xml 声明。
  */
-class CustomDefaultActionGroup : DefaultActionGroup() {
+class GenToolActionGroup : DefaultActionGroup() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
@@ -23,6 +23,6 @@ class CustomDefaultActionGroup : DefaultActionGroup() {
         val editor = event.getData(CommonDataKeys.EDITOR)
         event.presentation.isEnabled = Objects.nonNull(editor)
         // Take this opportunity to set an icon for the group.
-        event.presentation.setIcon(SdkIcons.ENUM_IS_XXX)
+        event.presentation.setIcon(SdkIcons.CODE)
     }
 }
