@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.coderknock.codegen"
-version = "0.0.2"
+version = "0.0.3"
 
 repositories {
     // 添加阿里云镜像地址
@@ -44,12 +44,12 @@ tasks {
     }
 
     signPlugin {
-        certificateChainFile.set(file(System.getenv("CERTIFICATE_CHAIN")))
-        privateKeyFile.set(file(System.getenv("PRIVATE_KEY")))
-        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+        certificateChainFile.set(file(providers.environmentVariable("CERTIFICATE_CHAIN")))
+        privateKeyFile.set(file(providers.environmentVariable("PRIVATE_KEY")))
+        password.set(providers.environmentVariable("PRIVATE_KEY_PASSWORD"))
     }
 
     publishPlugin {
-        token.set(System.getenv("PUBLISH_TOKEN"))
+        token.set(providers.environmentVariable("PUBLISH_TOKEN"))
     }
 }

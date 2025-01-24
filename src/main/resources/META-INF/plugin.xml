@@ -45,21 +45,18 @@
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
-    <extensions defaultExtensionNs="com.intellij">
-
-    </extensions>
+    <extensions defaultExtensionNs="com.intellij"/>
+    <!--    声明用于本地化菜单字符串的默认资源位置。-->
+    <!-- Declare the default resource location for localizing menu strings -->
+    <resource-bundle>messages.TranslationBundle</resource-bundle>
     <actions>
-        <group id="com.coderknock.codegen.tool.action.GenToolActionGroup"
-               class="com.coderknock.codegen.tool.action.GenToolActionGroup"
-               text="Code Extend"
-               description="Code extend menu"
+        <group id="group.CodeExtendGroup"
+               class="com.coderknock.codegen.tool.group.CodeExtendGroup"
                popup="true">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-            <action id="com.coderknock.codegen.tool.action.EnumExtendAction"
+            <action id="action.EnumExtendAction"
                     class="com.coderknock.codegen.tool.action.EnumExtendAction"
-                    icon="com.coderknock.codegen.tool.icons.SdkIcons.ENUM_EXTEND"
-                    text="Enum IsXXX"
-                    description="Enum isXXX Extend"/>
+                    icon="com.coderknock.codegen.tool.icons.SdkIcons.ENUM_EXTEND"/>
         </group>
     </actions>
 
