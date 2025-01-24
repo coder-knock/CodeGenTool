@@ -16,27 +16,14 @@
     <description>
         <![CDATA[This Java code generator plugin has good scalability and will gradually incorporate various code generation logics through iteration in the future. Currently, the implemented function is to automatically generate the isXXX method in enumeration classes, thereby improving development efficiency and code standardization.]]></description>
     <change-notes><![CDATA[
-<h2>Enum isXXX/h2>
+<h3>Other optimizations</h2>
 <ul>
-  <li>Enum supports the generation of the isExist method.</li>
-  <li>Comments have been added to the generated method.</li>
-</ul>
-<h2>Other optimizations</h2>
-<ul>
-  <li>The supported versions have been expanded.</li>
-  <li>Adjust the icon</li>
+  <li>Internationalization support, currently supporting English and Chinese</li>
 </ul>
 
-
-<h2>Enum isXXX/h2>
+<h3>其他优化</h2>
 <ul>
-  <li>Enum 支持生成 `isExist` 方法</li>
-  <li>生成的方法添加了注释</li>
-</ul>
-<h2>其他优化</h2>
-<ul>
-  <li>扩展了支持的版本</li>
-  <li>调整图标</li>
+  <li>国际化支持，目前支持英语和中文</li>
 </ul>
 ]]></change-notes>
     <!-- Product and plugin compatibility requirements.

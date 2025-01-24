@@ -11,5 +11,5 @@ fun message(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: An
 }
 
 fun adaptedMessage(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): String {
-    return TranslationBundle.getAdaptedMessage(key, *params)
+    return TranslationBundle.getAdaptedMessage(key, *params).replace("\\n", System.lineSeparator())
 }
