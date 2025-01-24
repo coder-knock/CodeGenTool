@@ -48,7 +48,7 @@ public interface GenerationUtil {
                 // 生成基于枚举自身的 is 方法
                 if (Objects.isNull(isXXXMethod)) {
                     methodSource = new MethodImpl<>(enumSource);
-                    methodSource.getJavaDoc().setFullText(StrUtil.format(TranslationBundleKt.adaptedMessage("enum.extend.is_xxx.enum"), enumConstant.getName(), enumSource.getName(), enumConstantParameterName, enumConstant.getName(), enumConstant.getName()));
+                    methodSource.getJavaDoc().setFullText(StrUtil.format(TranslationBundleKt.adaptedMessage("enum.extend.is_xxx.enum"), enumConstantFullQuote, enumConstantParameterName, enumConstant.getName(), enumConstant.getName()));
                     methodSource.setPublic().setStatic(true).setName(isXXXMethodName).setReturnType("boolean").setParameters(enumParameters).setBody(StrUtil.format("return {}.equals({});", enumConstant.getName(), enumConstantParameterName));
                     methodSources.add(methodSource);
                 }
