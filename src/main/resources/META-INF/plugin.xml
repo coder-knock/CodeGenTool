@@ -14,25 +14,44 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description>
-        <![CDATA[This Java code generator plugin has good scalability and will gradually incorporate various code generation logics through iteration in the future. Currently, the implemented function is to automatically generate the isXXX method in enumeration classes, thereby improving development efficiency and code standardization.]]></description>
-    <change-notes><![CDATA[
-<h3>Other optimizations</h2>
+        <![CDATA[This Java code generator plugin has good scalability and will gradually incorporate various code generation logics through iteration in the future. Currently implemented features:
 <ul>
-  <li>Internationalization support, currently supporting English and Chinese</li>
+  <li>Automatically generate isXXX methods for enum classes</li>
+  <li>Enum consistency check across Git branches</li>
+  <li>Detect enum value conflicts and duplicate values</li>
+  <li>Real-time inspection during editing</li>
+</ul>
+Improve development efficiency and code standardization.]]></description>
+    <change-notes><![CDATA[
+<h3>New features: Enum consistency check</h2>
+<ul>
+  <li>Add compare current enum with target branch</li>
+  <li>Add full project scan and compare all enums</li>
+  <li>Add real-time consistency inspection</li>
+  <li>Refactor Git integration: use IDEA built-in git4idea, native SSH support</li>
+  <li>Check for value mismatches, missing constants, and duplicate values</li>
 </ul>
 
-<h3>其他优化</h2>
+<h3>新增功能：枚举一致性检查</h2>
 <ul>
-  <li>国际化支持，目前支持英语和中文</li>
+  <li>新增 当前枚举与目标分支对比功能</li>
+  <li>新增 全项目扫描批量对比所有枚举</li>
+  <li>新增 编辑时实时一致性检查</li>
+  <li>重构 Git 集成：使用 IDEA 内置 git4idea，原生支持 SSH</li>
+  <li>检查值不匹配、常量缺失、重复值问题</li>
 </ul>
 ]]></change-notes>
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.git</depends>
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
-    <extensions defaultExtensionNs="com.intellij"/>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add inspection for real-time enum consistency check -->
+        <inspectionProvider language="JAVA" implementationClass="com.coderknock.codegen.tool.inspection.EnumConsistencyInspection"/>
+    </extensions>
     <!--    声明用于本地化菜单字符串的默认资源位置。-->
     <!-- Declare the default resource location for localizing menu strings -->
     <resource-bundle>messages.TranslationBundle</resource-bundle>
@@ -43,6 +62,13 @@
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
             <action id="action.EnumExtendAction"
                     class="com.coderknock.codegen.tool.action.EnumExtendAction"
+                    icon="com.coderknock.codegen.tool.icons.SdkIcons.ENUM_EXTEND"/>
+            <separator/>
+            <action id="action.CurrentEnumCompareAction"
+                    class="com.coderknock.codegen.tool.action.CurrentEnumCompareAction"
+                    icon="com.coderknock.codegen.tool.icons.SdkIcons.ENUM_EXTEND"/>
+            <action id="action.EnumCompareWithBranchAction"
+                    class="com.coderknock.codegen.tool.action.EnumCompareWithBranchAction"
                     icon="com.coderknock.codegen.tool.icons.SdkIcons.ENUM_EXTEND"/>
         </group>
     </actions>

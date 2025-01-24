@@ -1,11 +1,11 @@
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.9.25"
-    id("org.jetbrains.intellij") version "1.17.4"
+    id("org.jetbrains.kotlin.jvm") version "2.2.0"
+    id("org.jetbrains.intellij.platform") version "2.13.0"
 }
 
 group = "com.coderknock.codegen"
-version = "0.0.3"
+version = "0.0.4"
 
 repositories {
     // 添加阿里云镜像地址
@@ -13,19 +13,21 @@ repositories {
     mavenCentral()
 }
 
-// Configure Gradle IntelliJ Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-    version.set("2022.3")
+// Configure Gradle IntelliJ Platform Plugin
+// Read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
+intellijPlatform {
+    intellijVersion.set("2022.3")
     type.set("IC") // Target IDE Platform
     plugins.set(listOf(/* Plugin Dependencies */))
 }
 
 dependencies {
-    implementation("cn.hutool:hutool-all:5.8.35")
+    implementation("cn.hutool:hutool-all:5.8.36")
     implementation("org.jboss.forge.roaster:roaster-api:2.30.1.Final")
     implementation("org.jboss.forge.roaster:roaster-jdt:2.30.1.Final")
-    implementation("org.jetbrains:marketplace-zip-signer:0.1.8")
+    implementation("org.jetbrains:marketplace-zip-signer:0.1.38")
+    // JGit for Git operations
+    implementation("org.eclipse.jgit:org.eclipse.jgit:7.3.0.202506031305-r")
 }
 
 tasks {
@@ -38,18 +40,20 @@ tasks {
         kotlinOptions.jvmTarget = "17"
     }
 
-    patchPluginXml {
-        sinceBuild.set("223")
-        untilBuild = provider { null }
-    }
+    intellijPlatform {
+        patchPluginXml {
+            sinceBuild.set("223")
+            untilBuild.set(null as String?)
+        }
 
-    signPlugin {
-        certificateChainFile.set(file(providers.environmentVariable("CERTIFICATE_CHAIN")))
-        privateKeyFile.set(file(providers.environmentVariable("PRIVATE_KEY")))
-        password.set(providers.environmentVariable("PRIVATE_KEY_PASSWORD"))
-    }
+        signPlugin {
+            certificateChain.set(file(providers.environmentVariable("CERTIFICATE_CHAIN")))
+            privateKey.set(file(providers.environmentVariable("PRIVATE_KEY")))
+            password.set(providers.environmentVariable("PRIVATE_KEY_PASSWORD"))
+        }
 
-    publishPlugin {
-        token.set(providers.environmentVariable("PUBLISH_TOKEN"))
+        publishPlugin {
+            token.set(providers.environmentVariable("PUBLISH_TOKEN"))
+        }
     }
 }
