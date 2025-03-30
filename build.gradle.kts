@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.coderknock.codegen"
-version = "0.0.3"
+version = "0.0.4"
 
 repositories {
     // 添加阿里云镜像地址
