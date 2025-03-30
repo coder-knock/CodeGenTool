@@ -29,13 +29,14 @@ public interface GenerationUtil {
             }
             List<MethodSource<JavaEnumSource>> methodSources = new ArrayList<>();
             MethodSource<JavaEnumSource> methodSource;
-
+            Set<String> methodNames = new HashSet<>();
             if (CollUtil.isNotEmpty(enumSource.getFields())) {
                 field = enumSource.getFields().stream().filter(f -> f.hasAnnotation("equalsFiled")).findFirst().orElseGet(() -> enumSource.getFields().get(0));
             }
             String enumConstantParameterName = StrUtil.lowerFirst(enumSource.getName());
             String enumConstantFullQuote;
             String enumConstantFullQuoteFieldName;
+
             for (EnumConstantSource enumConstant : enumSource.getEnumConstants()) {
                 String fieldParameterName = StrUtil.lowerFirst(field.getName());
                 String fieldParameterType = field.getType().getName();
@@ -50,7 +51,8 @@ public interface GenerationUtil {
                     methodSource = new MethodImpl<>(enumSource);
                     methodSource.getJavaDoc().setFullText(StrUtil.format(TranslationBundleKt.adaptedMessage("enum.extend.is_xxx.enum"), enumConstantFullQuote, enumConstantParameterName, enumConstant.getName(), enumConstant.getName()));
                     methodSource.setPublic().setStatic(true).setName(isXXXMethodName).setReturnType("boolean").setParameters(enumParameters).setBody(StrUtil.format("return {}.equals({});", enumConstant.getName(), enumConstantParameterName));
-                    methodSources.add(methodSource);
+                    addMethod(isXXXMethodName, enumConstantParameterName, methodNames, methodSources, methodSource);
+
                 }
                 String isExistMethodName = "isExist";
                 MethodSource<JavaEnumSource> isExistMethod = enumSource.getMethod(isExistMethodName, enumSource.getName());
@@ -58,7 +60,7 @@ public interface GenerationUtil {
                     methodSource = new MethodImpl<>(enumSource);
                     methodSource.getJavaDoc().setFullText(StrUtil.format(TranslationBundleKt.adaptedMessage("enum.extend.is_exist.doc"), enumSource.getName(), enumConstantParameterName, enumSource.getName(), enumConstantParameterName));
                     methodSource.setPublic().setStatic(true).setName(isExistMethodName).setReturnType("boolean").setParameters(enumParameters).setBody(StrUtil.format("return Arrays.stream({}.values()).anyMatch(streamValue->streamValue.equals({}));", enumSource.getName(), enumConstantParameterName));
-                    methodSources.add(methodSource);
+                    addMethod(isExistMethodName, enumConstantParameterName, methodNames, methodSources, methodSource);
                 }
                 // 生成基于第一个字段的 is 方法
                 if (Objects.nonNull(field)) {
@@ -71,7 +73,7 @@ public interface GenerationUtil {
                         }
                         methodSource.getJavaDoc().setFullText(StrUtil.format(TranslationBundleKt.adaptedMessage("enum.extend.is_xxx.value"), enumConstantFullQuoteFieldName, fieldParameterName, fieldParameterType, fieldParameterName, enumConstantFullQuoteFieldName, enumConstantFullQuoteFieldName));
                         methodSource.setPublic().setStatic(true).setName(isXXXMethodName).setReturnType("boolean").setParameters(fieldParameters).setBody(StrUtil.format(template, enumConstant.getName() + DOT + fieldParameterName, fieldParameterName));
-                        methodSources.add(methodSource);
+                        addMethod(isXXXMethodName, fieldParameters, methodNames, methodSources, methodSource);
                     }
                 }
                 isExistMethod = enumSource.getMethod(isExistMethodName, fieldParameterType);
@@ -83,7 +85,7 @@ public interface GenerationUtil {
                     methodSource = new MethodImpl<>(enumSource);
                     methodSource.getJavaDoc().setFullText(StrUtil.format(TranslationBundleKt.adaptedMessage("enum.extend.is_exist.doc"), enumSource.getName(), fieldParameterName, fieldParameterType, fieldParameterName));
                     methodSource.setPublic().setStatic(true).setName(isExistMethodName).setReturnType("boolean").setParameters(fieldParameters).setBody(StrUtil.format(template, enumSource.getName(), DOT + fieldParameterName, fieldParameterName));
-                    methodSources.add(methodSource);
+                    addMethod(isExistMethodName, fieldParameters, methodNames, methodSources, methodSource);
                 }
             }
 
@@ -93,9 +95,18 @@ public interface GenerationUtil {
                     enumSource.addMethod(source);
                 }
             }
-            return Result.success(javaSource.toString());
+            // Idea z
+            return Result.success(javaSource.toString().replaceAll("\\r\\n|\\r|\\n", "\n"));
         } else {
             return Result.fail(400, "The selected code is not of enumeration type.");
+        }
+    }
+
+    private static void addMethod(String methodName, String parameterName, Set<String> methodNames, List<MethodSource<JavaEnumSource>> methodSources, MethodSource<JavaEnumSource> methodSource) {
+        String uniName = methodName + "#" + parameterName;
+        if (!methodNames.contains(uniName)) {
+            methodSources.add(methodSource);
+            methodNames.add(uniName);
         }
     }
 }
