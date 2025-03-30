@@ -43,11 +43,11 @@ tasks {
         untilBuild = provider { null }
     }
 
-    signPlugin {
-        certificateChainFile.set(file(providers.environmentVariable("CERTIFICATE_CHAIN")))
-        privateKeyFile.set(file(providers.environmentVariable("PRIVATE_KEY")))
-        password.set(providers.environmentVariable("PRIVATE_KEY_PASSWORD"))
-    }
+//    signPlugin {
+//        certificateChainFile.set(file(providers.environmentVariable("CERTIFICATE_CHAIN")))
+//        privateKeyFile.set(file(providers.environmentVariable("PRIVATE_KEY")))
+//        password.set(providers.environmentVariable("PRIVATE_KEY_PASSWORD"))
+//    }
 
     publishPlugin {
         token.set(providers.environmentVariable("PUBLISH_TOKEN"))
