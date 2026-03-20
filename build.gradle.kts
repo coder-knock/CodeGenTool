@@ -11,14 +11,9 @@ repositories {
     // 添加阿里云镜像地址
     maven("https://maven.aliyun.com/repository/public/")
     mavenCentral()
-}
-
-// Configure Gradle IntelliJ Platform Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
-intellijPlatform {
-    intellijVersion.set("2022.3")
-    type.set("IC") // Target IDE Platform
-    plugins.set(listOf(/* Plugin Dependencies */))
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 dependencies {
@@ -28,6 +23,16 @@ dependencies {
     implementation("org.jetbrains:marketplace-zip-signer:0.1.38")
     // JGit for Git operations
     implementation("org.eclipse.jgit:org.eclipse.jgit:7.3.0.202506031305-r")
+
+    // Unit tests
+    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
+    // IntelliJ Platform dependency
+    intellijPlatform {
+        intellijIdeaCommunity("2022.3")
+    }
 }
 
 tasks {
@@ -37,7 +42,13 @@ tasks {
         targetCompatibility = "17"
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
+    }
+
+    test {
+        useJUnitPlatform()
     }
 
     intellijPlatform {
@@ -47,8 +58,8 @@ tasks {
         }
 
         signPlugin {
-            certificateChain.set(file(providers.environmentVariable("CERTIFICATE_CHAIN")))
-            privateKey.set(file(providers.environmentVariable("PRIVATE_KEY")))
+            certificateChain.set(providers.environmentVariable("CERTIFICATE_CHAIN"))
+            privateKey.set(providers.environmentVariable("PRIVATE_KEY"))
             password.set(providers.environmentVariable("PRIVATE_KEY_PASSWORD"))
         }
 
