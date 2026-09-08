@@ -49,6 +49,6 @@ class EnumExtendAction(icon: Icon? = null) : DumbAwareAction({
     override fun update(e: AnActionEvent) {
         // Set the availability based on whether a project is open
         val project = e.project
-        e.presentation.isEnabledAndVisible = Objects.nonNull(project)
+        e.presentation.isEnabledAndVisible = Objects.nonNull(project) && e.getData(CommonDataKeys.EDITOR) != null
     }
 }

@@ -16,6 +16,7 @@ Currently implemented features:
 
 ✅ **Automatic `isXXX()` method generation for enum classes** - Automatically generate type-safe predicate methods for each enum constant
 ✅ **Enum Consistency Check** - Compare enums across different branches, detect value conflicts and duplicate values, support real-time inspection
+✅ **Reverse Enum Lookup** - Generate null-safe `Optional` lookup methods with default-value fallback
 
 ## ✨ Features
 
@@ -116,6 +117,25 @@ public enum Gender {
 
 > **Note:** If an enum has multiple fields and `@EqualsField` is not specified, the plugin will default to selecting the first non-static field for comparison.
 
+### Generate Reverse Lookup Methods
+
+Right-click in an enum file and choose `CodeGen` → `Generate Enum Lookup Methods`. The plugin uses the
+field marked with `@EqualsField`, or the first instance field when no field is marked.
+
+```java
+public static Optional<Gender> fromCode(int code) {
+    return Arrays.stream(values())
+            .filter(candidate -> candidate.code == code)
+            .findFirst();
+}
+
+public static Gender fromCodeOrDefault(int code, Gender defaultValue) {
+    return fromCode(code).orElse(defaultValue);
+}
+```
+
+Object fields are compared with `Objects.equals`, so nullable values are safe. Running the generator repeatedly does not create duplicate methods.
+
 ### Enum Consistency Check
 
 When multiple branches develop enums in parallel, conflicts such as enum constant value collisions and duplicate values can easily occur. The plugin provides three ways to check:
@@ -192,6 +212,7 @@ cd CodeGenTool
 - [ ] Support toString/equals/hashCode template generation
 - [ ] Support custom code templates
 - [ ] Add plugin settings page for configuration of generation rules
+- [x] ✅ Generate Optional reverse lookup and default fallback methods
 
 ## 🤝 Contributing
 

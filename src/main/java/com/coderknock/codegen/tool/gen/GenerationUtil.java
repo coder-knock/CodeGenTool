@@ -22,12 +22,10 @@ public interface GenerationUtil {
             }
 
             JavaEnumSource enumSource = (JavaEnumSource) javaSource;
-            // Add Arrays import
+            // Add imports used by the generated methods. Do not import EqualsField:
+            // that annotation belongs to the plugin and is not available to user projects.
             if (!enumSource.hasImport(Arrays.class)) {
                 enumSource.addImport(Arrays.class);
-            }
-            if (!enumSource.hasImport(EqualsField.class)) {
-                enumSource.addImport(EqualsField.class);
             }
 
             List<MethodSource<JavaEnumSource>> methodSources = new ArrayList<>();
@@ -122,6 +120,72 @@ public interface GenerationUtil {
                     enumSource.addMethod(source);
                 }
             }
+            return Result.success(javaSource.toString());
+        } catch (Exception e) {
+            return Result.fail(500, TranslationBundleKt.adaptedMessage("enum.extend.parse.error", e.getMessage()));
+        }
+    }
+
+    /**
+     * Generates null-safe lookup helpers for the enum comparison field:
+     * {@code fromXxx(value)} and {@code fromXxxOrDefault(value, defaultValue)}.
+     */
+    static Result<String> enumLookup(String javaCode) {
+        try {
+            var javaSource = Roaster.parse(JavaSource.class, javaCode);
+            if (!javaSource.isEnum()) {
+                return Result.fail(400, TranslationBundleKt.adaptedMessage("enum.extend.not.enum.error"));
+            }
+
+            JavaEnumSource enumSource = (JavaEnumSource) javaSource;
+            List<FieldSource<JavaEnumSource>> fields = enumSource.getFields().stream()
+                    .filter(field -> !field.isStatic())
+                    .toList();
+            if (fields.isEmpty()) {
+                return Result.fail(400, TranslationBundleKt.adaptedMessage("enum.lookup.no.field.error"));
+            }
+
+            FieldSource<JavaEnumSource> field = fields.stream()
+                    .filter(candidate -> candidate.hasAnnotation(EqualsField.class))
+                    .findFirst()
+                    .orElse(fields.get(0));
+            String fieldName = field.getName();
+            String parameterType = field.getType().getName();
+            String methodSuffix = StrUtil.upperFirst(fieldName);
+            String lookupMethodName = "from" + methodSuffix;
+            String fallbackMethodName = lookupMethodName + "OrDefault";
+
+            if (!enumSource.hasImport(Optional.class)) {
+                enumSource.addImport(Optional.class);
+            }
+            if (!field.getType().isPrimitive() && !enumSource.hasImport(Objects.class)) {
+                enumSource.addImport(Objects.class);
+            }
+
+            if (enumSource.getMethod(lookupMethodName, parameterType) == null) {
+                String comparison = field.getType().isPrimitive()
+                        ? "candidate." + fieldName + " == " + fieldName
+                        : "Objects.equals(candidate." + fieldName + ", " + fieldName + ")";
+                enumSource.addMethod()
+                        .setPublic().setStatic(true)
+                        .setName(lookupMethodName)
+                        .setReturnType("Optional<" + enumSource.getName() + ">")
+                        .setParameters(parameterType + " " + fieldName)
+                        .setBody("return Arrays.stream(values())\n        .filter(candidate -> " + comparison + ")\n        .findFirst();");
+            }
+
+            if (!enumSource.hasImport(Arrays.class)) {
+                enumSource.addImport(Arrays.class);
+            }
+            if (enumSource.getMethod(fallbackMethodName, parameterType, enumSource.getName()) == null) {
+                enumSource.addMethod()
+                        .setPublic().setStatic(true)
+                        .setName(fallbackMethodName)
+                        .setReturnType(enumSource.getName())
+                        .setParameters(parameterType + " " + fieldName + ", " + enumSource.getName() + " defaultValue")
+                        .setBody("return " + lookupMethodName + "(" + fieldName + ").orElse(defaultValue);");
+            }
+
             return Result.success(javaSource.toString());
         } catch (Exception e) {
             return Result.fail(500, TranslationBundleKt.adaptedMessage("enum.extend.parse.error", e.getMessage()));

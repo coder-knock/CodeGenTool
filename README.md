@@ -16,6 +16,7 @@ CodeGenTool 是一个面向 Java 开发者的 IntelliJ IDEA 插件，致力于�
 
 ✅ **枚举类 `isXXX()` 方法自动生成** - 为枚举类的每个常量自动生成类型安全的判断方法
 ✅ **枚举一致性检查** - 对比不同分支枚举，检查枚举常量值冲突和重复值，支持实时检查
+✅ **枚举值反向查找** - 生成返回 `Optional` 的空值安全查找方法，并支持默认值回退
 
 ## ✨ 功能特性
 
@@ -116,6 +117,25 @@ public enum Gender {
 
 > **说明：** 如果枚举有多个字段且未指定 `@EqualsField`，插件默认会选择第一个非静态字段进行比较。
 
+### 生成枚举反向查找方法
+
+在枚举文件中右键选择 `CodeGen` → `生成枚举查找方法`。插件会使用 `@EqualsField`
+标记的字段；如果没有标记，则使用第一个实例字段。
+
+```java
+public static Optional<Gender> fromCode(int code) {
+    return Arrays.stream(values())
+            .filter(candidate -> candidate.code == code)
+            .findFirst();
+}
+
+public static Gender fromCodeOrDefault(int code, Gender defaultValue) {
+    return fromCode(code).orElse(defaultValue);
+}
+```
+
+对象字段使用 `Objects.equals` 比较，可安全处理 `null`。重复执行生成命令不会创建重复方法。
+
 ### 枚举一致性检查
 
 当多个分支并行开发枚举时，容易出现枚举常量值冲突、重复值等问题。插件提供两种检查方式：
@@ -192,6 +212,7 @@ cd CodeGenTool
 - [ ] 支持生成 toString/equals/hashCode 模板
 - [ ] 支持自定义代码模板
 - [ ] 添加插件设置页面，支持配置生成规则
+- [x] ✅ 生成基于枚举字段的 Optional 反向查找与默认值回退方法
 
 ## 🤝 贡献
 

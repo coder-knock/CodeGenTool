@@ -63,6 +63,9 @@ Improve development efficiency and code standardization.]]></description>
             <action id="action.EnumExtendAction"
                     class="com.coderknock.codegen.tool.action.EnumExtendAction"
                     icon="com.coderknock.codegen.tool.icons.SdkIcons.ENUM_EXTEND"/>
+            <action id="action.EnumLookupAction"
+                    class="com.coderknock.codegen.tool.action.EnumLookupAction"
+                    icon="com.coderknock.codegen.tool.icons.SdkIcons.ENUM_EXTEND"/>
             <separator/>
             <action id="action.CurrentEnumCompareAction"
                     class="com.coderknock.codegen.tool.action.CurrentEnumCompareAction"
