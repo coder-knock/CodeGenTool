@@ -232,6 +232,49 @@ class GenerationUtilTest {
     }
 
     @Test
+    void testGenerateLookupMethods() {
+        String javaCode = """
+                public enum Status {
+                    ACTIVE(1), INACTIVE(0);
+                    private final int code;
+                    Status(int code) { this.code = code; }
+                }
+                """;
+
+        Result<String> result = GenerationUtil.enumLookup(javaCode);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getData().contains("Optional<Status> fromCode(int code)"));
+        assertTrue(result.getData().contains("candidate.code == code"));
+        assertTrue(result.getData().contains("Status fromCodeOrDefault(int code, Status defaultValue)"));
+
+        Result<String> repeated = GenerationUtil.enumLookup(result.getData());
+        assertTrue(repeated.isSuccess());
+        assertEquals(1, countOccurrences(repeated.getData(), "Optional<Status> fromCode"));
+    }
+
+    @Test
+    void testLookupUsesNullSafeObjectComparison() {
+        String javaCode = """
+                public enum Color {
+                    RED("red"), UNKNOWN(null);
+                    private final String code;
+                    Color(String code) { this.code = code; }
+                }
+                """;
+
+        Result<String> result = GenerationUtil.enumLookup(javaCode);
+        assertTrue(result.isSuccess());
+        assertTrue(result.getData().contains("Objects.equals(candidate.code, code)"));
+    }
+
+    @Test
+    void testLookupRequiresField() {
+        Result<String> result = GenerationUtil.enumLookup("public enum Empty { A, B }");
+        assertFalse(result.isSuccess());
+        assertEquals(400, result.getCode());
+    }
+
+    @Test
     void testEnumWithMultipleFieldsUsesFirst() {
         // 测试场景：多个字段没有 @EqualsField 应该使用第一个非静态字段
         String javaCode = """
